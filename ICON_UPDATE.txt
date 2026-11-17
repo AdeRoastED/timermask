@@ -1,0 +1,1 @@
+TimerMask v2.3: installed app icon updated using your second supplied symbol-only image. Centered and enlarged on square dark background. No TIMERMASK text in installed icon. After deploying, uninstall/reinstall the PWA if your device retains the old icon.
