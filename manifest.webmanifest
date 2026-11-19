@@ -1,8 +1,8 @@
 {
-  "name": "TimerMask \u2014 Countdowns & Intervals",
+  "name": "TimerMask — Countdowns & Intervals",
   "short_name": "TimerMask",
   "description": "Custom countdown, interval, Tabata, HIIT and focus timers",
-  "start_url": "./?v=24",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#090b0e",
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
+  ],
+  "id": "./"
 }

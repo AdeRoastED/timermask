@@ -1,0 +1,12 @@
+TimerMask v3.0 — consolidated stability candidate (2026-11-19)
+
+Built from the preserved v2.9 candidate. Changes:
+- Validate locally saved sequences and routines before loading them. Corrupt data now falls back to safe defaults rather than crashing the timer UI.
+- Enforce the existing 100-step limit when adding steps.
+- Enforce a 100-saved-routine limit to avoid unlimited local storage growth.
+- Deep-copy imported backup routines and sequences after validation.
+- Refresh the PWA cache identifier and app.js version query to v30.
+- Retain v2.9 Adeba Studio Buy Me a Coffee integration.
+
+No paid checkout or advertising was enabled.
+Limitations: browser/device timing, background audio, wake lock, install/update behavior and accessibility still require real-device testing.
