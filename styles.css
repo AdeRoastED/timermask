@@ -220,6 +220,8 @@ body.largeDigits .dial.double .time{font-size:min(27cqw,calc(59cqw / var(--tw)))
   .toplinks{flex-wrap:nowrap;gap:6px}
   .toplinks .btn{padding:0;min-width:44px;width:44px;height:44px}
   .toplinks .btn>span[data-i18n]{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  .toplinks .ytBtn{width:auto;padding:0 12px}
+  .toplinks .ytBtn>span[data-i18n]{position:static;width:auto;height:auto;overflow:visible;clip:auto}
   .timerActions{flex-wrap:nowrap;width:100%;gap:8px}
   .timerActions .btn{flex:1 1 0;min-width:0;padding:10px 6px;font-size:14px}
   .timerActions .primary{flex:2 1 0;min-width:0}
@@ -239,6 +241,7 @@ body.largeDigits .dial.double .time{font-size:min(27cqw,calc(59cqw / var(--tw)))
 }
 @media (max-width:680px) and (max-height:760px) and (orientation:portrait){.heroHead,.quickIntro{display:none}.tabs{margin:6px 0 8px}.tab{min-height:40px;padding:7px 8px}.dial{width:min(100%,300px,31vh)}.page[data-page="home"] .hero{padding:12px}.progressBar{margin:8px 0}.presets{margin-top:2px}.top{margin-bottom:2px}}
 @media (max-width:480px){.brand small{display:none}}
+@media (max-width:399px){.brand div{display:none}}
 @media (max-width:380px){.pageLink{font-size:10px}}
 
 /* phones in landscape (short screens): slim icon rail on the left, big dial, controls on the right */

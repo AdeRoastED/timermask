@@ -155,14 +155,14 @@
   }
 
   /* Future boundaries, for scheduling background alerts. Returns ms offsets from now. */
-  function upcomingBoundaries(tl, elapsedMs, limit) {
+  function upcomingBoundaries(tl, elapsedMs, limit, includeLast) {
     const res = [];
     const loc = locate(tl, elapsedMs);
     if (loc.done) return res;
-    for (let i = loc.idx; i < tl.segs.length && res.length < limit; i++) {
-      const endMs = tl.starts[i] + tl.segs[i].seconds * 1000;
-      res.push({ idx: i, inMs: endMs - elapsedMs, last: i === tl.segs.length - 1 });
-    }
+    const mk = (i) => ({ idx: i, inMs: tl.starts[i] + tl.segs[i].seconds * 1000 - elapsedMs, last: i === tl.segs.length - 1 });
+    for (let i = loc.idx; i < tl.segs.length && res.length < limit; i++) res.push(mk(i));
+    // very long sessions: the final "done" alert is always scheduled, even when the middle phases exceed the limit
+    if (includeLast && res.length && !res[res.length - 1].last) res.push(mk(tl.segs.length - 1));
     return res;
   }
 

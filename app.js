@@ -337,7 +337,7 @@
   function updateBanner() {
     if (!N.isNative) return;
     const fs = document.body.classList.contains('fullscreenMode');
-    if (!run.playing && !fs && !N.adFree) N.showBanner(); else N.hideBanner();
+    if (!run.playing && !fs && !N.adFree && currentPage === 'home') N.showBanner(); else N.hideBanner();
   }
 
   /* ------------------------------------------------------------------ theme / prefs */
@@ -563,6 +563,7 @@
     $('settingsMenu').classList.toggle('hidden', !!currentSub);
     $$('.settingsDetail').forEach(el => el.classList.toggle('hidden', el.dataset.settingsSection !== currentSub));
     document.body.dataset.current = currentPage;
+    updateBanner();
     $('main').scrollTop = 0;
     if (currentPage !== 'home' && document.body.classList.contains('fullscreenMode')) { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen(); setFullUI(false); }
     if (userInitiated) $('main').focus({ preventScroll: true });
@@ -596,7 +597,7 @@
   function scheduleBackgroundAlerts() {
     if (!N.isNative || !run.playing) return;
     const wall = Date.now();
-    const list = E.upcomingBoundaries(run.tl, elapsed(), 60).map(b => {
+    const list = E.upcomingBoundaries(run.tl, elapsed(), 300, true).map(b => {
       const next = run.segs[b.idx + 1];
       return { atMs: wall + b.inMs, title: b.last ? t('annDone') : phaseLabel(next), body: b.last ? t('tComplete') : (roundLabel(next) || 'TimerMask') };
     });

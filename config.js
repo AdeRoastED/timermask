@@ -1,6 +1,6 @@
 /* TimerMask configuration. Edit values here before building the Android app. */
 window.TM_CONFIG = {
-  version: '3.0.1',
+  version: '3.0.2',
 
   /* Monetisation: free with one banner, one-time purchase to remove ads (no subscriptions). */
   productId: 'remove_ads',          // Must match the in-app product ID created in Google Play Console.

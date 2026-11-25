@@ -18,7 +18,7 @@
   let adFree = false;
   try { adFree = localStorage.getItem(AD_KEY) === '1'; } catch (e) { /* ignore */ }
   let price = CFG.priceFallback || '€2.99';
-  let bannerShown = false, bannerHidden = false, adsReady = false, wantBanner = false, billingReady = false, notifReady = false;
+  let bannerShown = false, bannerHidden = false, adsAllowed = false, adsReady = false, wantBanner = false, billingReady = false, notifReady = false;
 
   function setAdFree(v) {
     v = !!v;
@@ -30,15 +30,25 @@
   }
 
   /* ---------- Ads (AdMob) ---------- */
+  /* Google UMP: ads may be requested only when consent info says so. Any failure means NO ads (never assume consent). */
+  function consentOk(info) {
+    if (!info) return false;
+    if (typeof info.canRequestAds === 'boolean') return info.canRequestAds;
+    return info.status === 'NOT_REQUIRED' || info.status === 'OBTAINED';
+  }
+  async function gatherConsent(AdMob) {
+    try {
+      let info = await AdMob.requestConsentInfo();
+      if (info && info.isConsentFormAvailable && info.status === 'REQUIRED') { await AdMob.showConsentForm(); info = await AdMob.requestConsentInfo(); }
+      return consentOk(info);
+    } catch (e) { return false; }
+  }
   async function initAds() {
     const AdMob = plugin('AdMob');
     if (!AdMob || adsReady) return;
     try {
       await AdMob.initialize({ initializeForTesting: !!(CFG.admob && CFG.admob.testing) });
-      try { // EU/UK consent (UMP). Required before showing personalised ads in the EEA.
-        const info = await AdMob.requestConsentInfo();
-        if (info && info.isConsentFormAvailable && info.status === 'REQUIRED') await AdMob.showConsentForm();
-      } catch (e) { /* consent unavailable: AdMob serves non-personalised ads where required */ }
+      adsAllowed = await gatherConsent(AdMob);
       try { AdMob.addListener('bannerAdSizeChanged', (s) => emit('adHeight', (s && s.height) || 0)); } catch (e) { /* ignore */ }
       adsReady = true;
       if (wantBanner && !adFree) showBanner();
@@ -48,7 +58,7 @@
     wantBanner = true;
     if (adFree || !isNative()) return;
     const AdMob = plugin('AdMob');
-    if (!AdMob || !adsReady) return;
+    if (!AdMob || !adsReady || !adsAllowed) return;
     try {
       if (bannerShown) { if (bannerHidden) { bannerHidden = false; await AdMob.resumeBanner(); } return; }
       bannerShown = true; bannerHidden = false;
@@ -70,7 +80,10 @@
   }
   async function openAdChoices() {
     const AdMob = plugin('AdMob');
-    try { if (AdMob && AdMob.showPrivacyOptionsForm) await AdMob.showPrivacyOptionsForm(); } catch (e) { /* ignore */ }
+    try {
+      if (AdMob && AdMob.showPrivacyOptionsForm) await AdMob.showPrivacyOptionsForm();
+      if (AdMob) { const info = await AdMob.requestConsentInfo(); adsAllowed = consentOk(info); if (!adsAllowed) hideBanner(true); else if (wantBanner) showBanner(); }
+    } catch (e) { /* ignore */ }
   }
 
   /* ---------- Billing (cordova-plugin-purchase v13) ---------- */
