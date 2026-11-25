@@ -252,9 +252,8 @@
     try { o = JSON.parse(store.get(SKEY) || 'null'); } catch (e) { o = null; }
     if (!o || o.v !== 1 || o.sig !== sig() || !(o.base >= 0) || !(o.wall > 0)) { clearSession(); return; }
     const away = Math.max(0, Date.now() - o.wall);
-    if (o.playing && away > 12 * 3600 * 1000) { clearSession(); return; }
     const base = o.base + (o.playing ? away : 0);
-    if (base >= run.tl.totalMs) { clearSession(); if (o.playing) toast(t('tFinishedAway')); return; }
+    if (base >= run.tl.totalMs) { clearSession(); if (o.playing && base - run.tl.totalMs < 12 * 3600 * 1000) toast(t('tFinishedAway')); return; }
     run.base = base; run.idx = E.locate(run.tl, base).idx;
     if (o.playing) {
       run.playing = true; run.p0 = performance.now(); run.w0 = Date.now();

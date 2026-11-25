@@ -1,6 +1,6 @@
 /* TimerMask service worker: full offline support.
    Cache-first from a versioned precache. To release an update, bump VERSION (every release must change this file). */
-const VERSION = '3.0.2';
+const VERSION = '3.0.3';
 const CACHE = 'timermask-v' + VERSION;
 const CORE = [
   './', './index.html', './styles.css', './i18n.js', './engine.js', './config.js', './native.js', './app.js',

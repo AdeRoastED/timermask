@@ -130,7 +130,7 @@
   }
 
   /* ---------- Background alerts (Local Notifications) ---------- */
-  const ALERT_BASE = 7000, ALERT_MAX = 60;
+  const ALERT_BASE = 7000, ALERT_MAX = 320;
   async function initNotifications() {
     const LN = plugin('LocalNotifications');
     if (!LN || notifReady || !isNative()) return notifReady;
@@ -149,7 +149,8 @@
     if (!(await initNotifications())) return;
     try {
       await cancelAlerts();
-      const notifications = items.slice(0, ALERT_MAX).map((it, i) => ({
+      const list = items.length > ALERT_MAX ? items.slice(0, ALERT_MAX - 1).concat(items[items.length - 1]) : items; // the final alert is never dropped
+      const notifications = list.map((it, i) => ({
         id: ALERT_BASE + i, title: it.title, body: it.body, channelId: 'timer_alerts',
         schedule: { at: new Date(it.atMs), allowWhileIdle: true }
       }));

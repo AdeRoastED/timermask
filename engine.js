@@ -108,7 +108,7 @@
       if (prepare) out.push(seg('prepare', prepare));
       for (let i = 1; i <= rounds; i++) {
         out.push(seg('work', work, { round: { i, n: rounds, type: 'round' } }));
-        if (rest && i < rounds) out.push(seg('rest', rest, { round: { i, n: rounds, type: 'round' } }));
+        if (rest) out.push(seg('rest', rest, { round: { i, n: rounds, type: 'round' } })); // every round ends with its rest (a 20/10 x 8 Tabata = 4:00)
       }
     } else if (tab === 'focus') {
       const { focusMin, breakMin, cycles } = cfg.focus;
