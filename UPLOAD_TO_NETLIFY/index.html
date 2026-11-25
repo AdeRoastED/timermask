@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b0e">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="TimerMask: beautiful customizable countdown, Tabata, HIIT, focus and sequence timers.">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; media-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="styles.css">
+<title>TimerMask — Make every second count</title>
+</head>
+<body>
+<a class="skipLink" href="#main" data-i18n="skipToContent">Skip to content</a>
+<div class="shell">
+  <header class="top">
+    <div class="brand">
+      <img src="logo-header.png" alt="TimerMask" width="58" height="58" decoding="async">
+      <div><strong>TIMERMASK</strong><small>YOUR TIME. YOUR RULES.</small></div>
+    </div>
+    <div class="toplinks">
+      <a class="btn sm ghost" id="ytTop" href="https://www.youtube.com/@TimerMask" rel="noopener noreferrer" target="_blank"><span aria-hidden="true">▶</span> <span data-i18n="youtube">YouTube</span></a>
+      <button class="btn sm installBtn" id="installBtn" type="button"><span aria-hidden="true">⬇</span> <span data-i18n="install">Install app</span></button>
+      <button class="btn sm" id="fullBtn" type="button"><span aria-hidden="true">⛶</span> <span data-i18n="fullscreen">Fullscreen</span></button>
+    </div>
+  </header>
+
+  <nav class="pageNav" id="pageNav" data-i18n-aria="navLabel" aria-label="Main navigation">
+    <button class="pageLink selected" data-page-target="home" type="button" aria-current="page"><span aria-hidden="true">⌂</span> <span data-i18n="home">Home</span></button>
+    <button class="pageLink" data-page-target="timers" type="button"><span aria-hidden="true">◷</span> <span data-i18n="timers">Timers</span></button>
+    <button class="pageLink" data-page-target="design" type="button"><span aria-hidden="true">◉</span> <span data-i18n="design">Design</span></button>
+    <button class="pageLink" data-page-target="support" type="button"><span aria-hidden="true">♡</span> <span data-i18n="support">Support</span></button>
+    <button class="pageLink" data-page-target="settings" type="button"><span aria-hidden="true">⚙</span> <span data-i18n="settings">Settings</span></button>
+  </nav>
+
+  <main id="main" tabindex="-1">
+
+    <!-- HOME -->
+    <section class="page active" data-page="home">
+      <div class="panel hero">
+        <div class="heroHead">
+          <div class="eyebrow" data-i18n="eyebrow">READY WHEN YOU ARE</div>
+          <h1 class="homeTitle" data-i18n="homeTitle">Your time. Your rules.</h1>
+        </div>
+        <div class="tabs" data-i18n-aria="modesLabel" aria-label="Timer type" role="group">
+          <button class="tab active" data-tab="countdown" type="button" aria-pressed="true" data-i18n="tabCountdown">Countdown</button>
+          <button class="tab" data-tab="tabata" type="button" aria-pressed="false" data-i18n="tabTabata">Tabata / HIIT</button>
+          <button class="tab" data-tab="focus" type="button" aria-pressed="false" data-i18n="tabFocus">Focus</button>
+          <button class="tab" data-tab="sequence" type="button" aria-pressed="false" data-i18n="tabSequence">Sequences</button>
+        </div>
+        <div class="timerArea">
+          <div class="dial" id="dial">
+            <svg aria-hidden="true" viewBox="0 0 300 300" focusable="false">
+              <defs><mask id="ringMask" maskUnits="userSpaceOnUse" x="-20" y="-20" width="340" height="340"><circle id="maskRing" cx="150" cy="150" r="126" fill="none" stroke="#fff" stroke-width="40" transform="rotate(-90 150 150)"></circle></mask></defs>
+              <circle class="track" cx="150" cy="150" r="126"></circle>
+              <circle class="secondaryRing" cx="150" cy="150" r="111"></circle>
+              <circle class="progress" cx="150" cy="150" r="126" id="progressRing"></circle>
+            </svg>
+            <div class="timerReadout">
+              <div class="time" id="time" role="timer">05:00</div>
+              <div class="phase" id="phase">READY</div>
+              <div class="round" id="round"></div>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="summaryRow">
+              <span class="summary" id="summary"></span>
+              <button class="btn sm ghost" id="editBtn" type="button"><span aria-hidden="true">✎</span> <span data-i18n="editTimer">Edit timer</span></button>
+            </div>
+            <div class="timerActions">
+              <button class="btn primary" id="startBtn" type="button"></button>
+              <button class="btn" id="resetBtn" type="button"><span aria-hidden="true">↻</span> <span data-i18n="reset">Reset</span></button>
+              <button class="btn" id="skipBtn" type="button" data-i18n-title="skipTitle"><span aria-hidden="true">⏭</span> <span data-i18n="skip">Skip</span></button>
+              <button class="btn ghost hidden" id="exitBtn" type="button" data-i18n="exitFs">Exit fullscreen</button>
+            </div>
+          </div>
+        </div>
+        <div class="progressBar" aria-hidden="true"><div id="bar"></div></div>
+        <div class="quickIntro" data-i18n="quickIntro">Pick a quick timer, or build your own in Timers.</div>
+        <div class="presets" id="presets" role="group" data-i18n-aria="quickLabel" aria-label="Quick timers"></div>
+      </div>
+    </section>
+
+    <!-- TIMERS -->
+    <section class="page" data-page="timers">
+      <div class="pageHeading"><h1 data-i18n="timersTitle">Build your timer</h1><p data-i18n="timersSub">Countdowns, intervals, focus and saved sequences.</p></div>
+      <div class="panel pagePanel">
+        <div class="tabs tabs2" data-i18n-aria="modesLabel" aria-label="Timer type" role="group">
+          <button class="tab active" data-tab="countdown" type="button" aria-pressed="true" data-i18n="tabCountdown">Countdown</button>
+          <button class="tab" data-tab="tabata" type="button" aria-pressed="false" data-i18n="tabTabata">Tabata / HIIT</button>
+          <button class="tab" data-tab="focus" type="button" aria-pressed="false" data-i18n="tabFocus">Focus</button>
+          <button class="tab" data-tab="sequence" type="button" aria-pressed="false" data-i18n="tabSequence">Sequences</button>
+        </div>
+        <h2 class="sectionTitle" id="configTitle">Customize countdown</h2>
+        <p class="notice lockedNotice hidden" id="lockedNotice" data-i18n="lockedNotice" role="status">Pause or reset the timer to change these settings.</p>
+
+        <div class="fieldgrid" id="countdownFields">
+          <label class="field"><span data-i18n="fMinutes">Minutes</span><input id="minutes" type="number" inputmode="numeric" min="0" max="999" value="5"></label>
+          <label class="field"><span data-i18n="fSeconds">Seconds</span><input id="seconds" type="number" inputmode="numeric" min="0" max="59" value="0"></label>
+        </div>
+        <div class="fieldgrid hidden" id="intervalFields">
+          <label class="field"><span data-i18n="fWork">Work (seconds)</span><input id="work" type="number" inputmode="numeric" min="1" max="3600" value="20"></label>
+          <label class="field"><span data-i18n="fRest">Rest (seconds)</span><input id="rest" type="number" inputmode="numeric" min="0" max="3600" value="10"></label>
+          <label class="field"><span data-i18n="fRounds">Rounds</span><input id="rounds" type="number" inputmode="numeric" min="1" max="200" value="8"></label>
+          <label class="field"><span data-i18n="fPrepare">Prepare (seconds)</span><input id="prepare" type="number" inputmode="numeric" min="0" max="60" value="3"></label>
+        </div>
+        <div class="fieldgrid hidden" id="focusFields">
+          <label class="field"><span data-i18n="fFocusMin">Focus (minutes)</span><input id="focusMin" type="number" inputmode="numeric" min="1" max="240" value="25"></label>
+          <label class="field"><span data-i18n="fBreakMin">Break (minutes)</span><input id="breakMin" type="number" inputmode="numeric" min="1" max="120" value="5"></label>
+          <label class="field"><span data-i18n="fCycles">Cycles</span><input id="cycles" type="number" inputmode="numeric" min="1" max="30" value="4"></label>
+        </div>
+        <div class="hidden" id="sequenceFields">
+          <div id="seqList" class="seqList"></div>
+          <div class="seqActions">
+            <button class="btn sm" id="addCount" type="button" data-i18n="addCount">+ Countdown</button>
+            <button class="btn sm" id="addInterval" type="button" data-i18n="addInterval">+ Intervals</button>
+          </div>
+          <p class="notice" data-i18n="seqHint">Use arrows to reorder steps. Sequences advance automatically.</p>
+        </div>
+
+        <div class="saveBlock">
+          <label class="field"><span id="presetNameLbl" data-i18n="presetName">Preset name</span><input id="presetName" maxlength="60" autocomplete="off"></label>
+          <div class="seqActions"><button class="btn sm" id="savePresetBtn" type="button" data-i18n="savePreset">Save preset</button></div>
+          <div class="settingsRow" id="savedRow">
+            <label for="savedSelect" id="savedLbl" data-i18n="savedPresets">Saved presets</label>
+            <span class="inlineGroup"><select id="savedSelect"></select><button class="btn sm ghost" id="deleteSaved" type="button" data-i18n="deleteSaved" disabled>Delete</button></span>
+          </div>
+        </div>
+
+        <div class="settingsRow"><label for="warning" data-i18n="warning">Final warning beeps</label><input class="switch" id="warning" type="checkbox" checked></div>
+        <div class="settingsRow"><label for="ding" data-i18n="ding">Transition ding</label><input class="switch" id="ding" type="checkbox" checked></div>
+        <div class="settingsRow"><label for="wake" data-i18n="wake">Keep screen awake</label><input class="switch" id="wake" type="checkbox" checked></div>
+        <div class="startBar">
+          <span class="summary" id="summary2"></span>
+          <button class="btn ghost" id="goTimer" type="button" data-i18n-aria="goToTimer" data-i18n-title="goToTimer" aria-label="Go to timer" title="Go to timer"><span aria-hidden="true">⌂</span></button>
+          <button class="btn primary" id="startFromTimers" type="button"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESIGN -->
+    <section class="page" data-page="design">
+      <div class="pageHeading"><h1 data-i18n="designTitle">Make it yours</h1><p data-i18n="designSub">Choose your ring, colours and display preferences.</p></div>
+      <div class="panel pagePanel">
+        <div class="subtle caps" data-i18n="chooseRing">CHOOSE YOUR RING</div>
+        <div class="ringChoices" id="rings" role="group" data-i18n-aria="chooseRing" aria-label="Choose your ring">
+          <button class="ringChoice active" data-ring="classic" type="button" aria-pressed="true"><div class="ringIcon"></div><span data-i18n="ringClassic">Classic</span></button>
+          <button class="ringChoice" data-ring="dashed" type="button" aria-pressed="false"><div class="ringIcon"></div><span data-i18n="ringTicks">Ticks</span></button>
+          <button class="ringChoice" data-ring="double" type="button" aria-pressed="false"><div class="ringIcon"></div><span data-i18n="ringDouble">Double</span></button>
+          <button class="ringChoice" data-ring="arc" type="button" aria-pressed="false"><div class="ringIcon"></div><span data-i18n="ringArc">Arc</span></button>
+          <button class="ringChoice" data-ring="minimal" type="button" aria-pressed="false"><div class="ringIcon"></div><span data-i18n="ringMinimal">Minimal</span></button>
+        </div>
+        <div class="subtle caps" style="margin-top:19px" data-i18n="accent">ACCENT COLOUR</div>
+        <div class="palette" id="palette" role="group" data-i18n-aria="accent" aria-label="Accent colour">
+          <button class="swatch active" data-color="#ff8a21" style="background:#ff8a21" type="button" data-i18n-aria="colOrange" aria-label="TimerMask orange" aria-pressed="true"></button>
+          <button class="swatch" data-color="#ffffff" style="background:#ffffff" type="button" data-i18n-aria="colWhite" aria-label="White" aria-pressed="false"></button>
+          <button class="swatch" data-color="#3aa9ff" style="background:#3aa9ff" type="button" data-i18n-aria="colBlue" aria-label="Blue" aria-pressed="false"></button>
+          <button class="swatch" data-color="#9de65b" style="background:#9de65b" type="button" data-i18n-aria="colGreen" aria-label="Green" aria-pressed="false"></button>
+          <button class="swatch" data-color="#d391ff" style="background:#d391ff" type="button" data-i18n-aria="colPurple" aria-label="Purple" aria-pressed="false"></button>
+          <label class="swatch customSwatch"><input id="customColor" type="color" value="#ff8a21" data-i18n-aria="colCustom" aria-label="Custom colour"></label>
+        </div>
+        <div class="settingsRow"><label for="light" data-i18n="lightMode">Light mode</label><input class="switch" id="light" type="checkbox"></div>
+        <div class="settingsRow"><label for="soundVolume" data-i18n="volume">Sound volume</label><input id="soundVolume" class="range" max="100" min="0" type="range" value="65"></div>
+      </div>
+    </section>
+
+    <!-- SUPPORT -->
+    <section class="page" data-page="support">
+      <div class="pageHeading"><h1 data-i18n="supportTitle">Support TimerMask</h1><p data-i18n="supportSub">Free timers for everyone, with optional support.</p></div>
+      <div class="panel pagePanel">
+        <p class="notice" data-i18n="supportNote">Free timers for everyone. Enjoy the app? You can also find more timers on YouTube.</p>
+        <div class="seqActions">
+          <a class="btn sm" href="https://www.youtube.com/@TimerMask" rel="noopener noreferrer" target="_blank"><span aria-hidden="true">▶</span> <span data-i18n="watchYt">Watch on YouTube</span></a>
+          <a class="btn sm hidden" id="coffeeBtn" href="#" rel="noopener noreferrer" target="_blank"><span aria-hidden="true">☕</span> <span data-i18n="coffee">Buy Me a Coffee</span></a>
+        </div>
+      </div>
+      <section class="panel pagePanel monetizeInfo" id="monetize" aria-labelledby="adsTitle">
+        <div><strong id="adsTitle" data-i18n="adsTitle">Enjoy every timer, free.</strong><p data-i18n="adsText">One unobtrusive banner on the dashboard. No ads while a timer is running or in fullscreen.</p></div>
+        <div class="seqActions">
+          <button class="btn adFreeBtn" id="adFreeBtn" type="button"></button>
+          <button class="btn ghost hidden" id="restoreBtn" type="button" data-i18n="restore">Restore purchase</button>
+        </div>
+        <p class="monetizeNote" id="adFreeNote" role="status"></p>
+      </section>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" data-page="settings">
+      <div class="pageHeading"><h1 data-i18n="settingsTitle">Settings &amp; About</h1><p data-i18n="settingsSub">Choose a category to manage your preferences.</p></div>
+      <div class="settingsMenu" id="settingsMenu">
+        <button type="button" class="settingsCategory" data-settings-target="language"><span class="settingsCategoryText"><strong data-i18n="setLang">Languages</strong><small data-i18n="setLangD">Language preferences</small></span><span aria-hidden="true">›</span></button>
+        <button type="button" class="settingsCategory" data-settings-target="interruptions"><span class="settingsCategoryText"><strong data-i18n="setInter">Interruptions</strong><small data-i18n="setInterD">Background and call behaviour</small></span><span aria-hidden="true">›</span></button>
+        <button type="button" class="settingsCategory" data-settings-target="accessibility"><span class="settingsCategoryText"><strong data-i18n="setAccess">Accessibility</strong><small data-i18n="setAccessD">Display and vibration</small></span><span aria-hidden="true">›</span></button>
+        <button type="button" class="settingsCategory" data-settings-target="installation"><span class="settingsCategoryText"><strong data-i18n="setAbout">Install &amp; About</strong><small data-i18n="setAboutD">Install and information</small></span><span aria-hidden="true">›</span></button>
+      </div>
+
+      <section class="panel pagePanel settingsDetail hidden" data-settings-section="language">
+        <button type="button" class="btn sm ghost settingsBack" data-i18n="backAll">← All settings</button>
+        <h2 data-i18n="langH">Language</h2>
+        <label class="field"><span data-i18n="appLang">App language</span><select id="languageSelect"></select></label>
+        <p class="notice" data-i18n="langNote">Changes the language of the whole app.</p>
+      </section>
+
+      <section class="panel pagePanel settingsDetail hidden" data-settings-section="interruptions">
+        <button type="button" class="btn sm ghost settingsBack" data-i18n="backAll">← All settings</button>
+        <h2 data-i18n="interH">Calls &amp; interruptions</h2>
+        <label class="settingsRow"><span data-i18n="whenHidden">When app is hidden</span>
+          <select id="interruptionMode"><option value="continue" data-i18n="optContinue">Keep counting (recommended)</option><option value="pause" data-i18n="optPause">Pause timer</option></select></label>
+        <p class="notice" data-i18n="interNote"></p>
+      </section>
+
+      <section class="panel pagePanel settingsDetail hidden" data-settings-section="accessibility">
+        <button type="button" class="btn sm ghost settingsBack" data-i18n="backAll">← All settings</button>
+        <h2 data-i18n="accH">Accessibility</h2>
+        <div class="settingsRow"><label for="reduceMotion" data-i18n="reduceMotion">Reduce motion</label><input class="switch" id="reduceMotion" type="checkbox"></div>
+        <div class="settingsRow"><label for="largeDigits" data-i18n="largeDigits">Extra-large timer numbers</label><input class="switch" id="largeDigits" type="checkbox"></div>
+        <div class="settingsRow"><label for="vibration" data-i18n="vibration">Vibrate on transitions (supported devices)</label><input class="switch" id="vibration" type="checkbox"></div>
+      </section>
+
+      <section class="panel pagePanel settingsDetail hidden" data-settings-section="installation">
+        <button type="button" class="btn sm ghost settingsBack" data-i18n="backAll">← All settings</button>
+        <h2 data-i18n="aboutH">App</h2>
+        <div class="seqActions">
+          <button class="btn" id="settingsInstall" type="button"><span aria-hidden="true">⬇</span> <span data-i18n="installTimer">Install TimerMask</span></button>
+          <button class="btn hidden" id="adChoicesBtn" type="button" data-i18n="adChoices">Ad choices</button>
+        </div>
+        <p class="notice" data-i18n="aboutNote">Timers and saved routines are stored on this device.</p>
+        <div class="seqActions">
+          <a class="btn sm ghost" href="https://www.youtube.com/@TimerMask" rel="noopener noreferrer" target="_blank"><span aria-hidden="true">▶</span> <span data-i18n="ytLink">TimerMask on YouTube</span></a>
+          <a class="btn sm ghost" href="privacy.html" id="privacyLink" data-i18n="privacy">Privacy policy</a>
+        </div>
+        <p class="notice" id="versionLine"></p>
+      </section>
+    </section>
+  <footer class="foot">
+    <span data-i18n="footerText">© TimerMask · Free timers. Saved routines stay on this device.</span>
+  </footer>
+  </main>
+
+</div>
+
+<div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog class="modal" id="installHelp" aria-labelledby="installTitle">
+  <h2 id="installTitle" data-i18n="instTitle">Install TimerMask</h2>
+  <p id="installInstructions"></p>
+  <div class="modalActions"><button class="btn primary" id="gotInstall" type="button" data-i18n="gotIt">Got it</button></div>
+</dialog>
+
+<dialog class="modal" id="stepDialog" aria-labelledby="stepTitle">
+  <form method="dialog" id="stepForm">
+    <h2 id="stepTitle" data-i18n="editStep">Edit step</h2>
+    <label class="field"><span data-i18n="stepName">Step name</span><input id="stepName" maxlength="60" autocomplete="off"></label>
+    <div class="fieldgrid" id="stepCountdownFields">
+      <label class="field"><span data-i18n="fMinutes">Minutes</span><input id="stepMin" type="number" inputmode="numeric" min="0" max="1440"></label>
+      <label class="field"><span data-i18n="fSeconds">Seconds</span><input id="stepSec" type="number" inputmode="numeric" min="0" max="59"></label>
+    </div>
+    <div class="fieldgrid" id="stepIntervalFields">
+      <label class="field"><span data-i18n="stepWork">Work seconds</span><input id="stepWork" type="number" inputmode="numeric" min="1" max="3600"></label>
+      <label class="field"><span data-i18n="stepRest">Rest seconds</span><input id="stepRest" type="number" inputmode="numeric" min="0" max="3600"></label>
+      <label class="field"><span data-i18n="stepRounds">Rounds</span><input id="stepRounds" type="number" inputmode="numeric" min="1" max="200"></label>
+    </div>
+    <div class="modalActions">
+      <button class="btn ghost" id="stepCancel" type="button" data-i18n="cancel">Cancel</button>
+      <button class="btn primary" id="stepSave" type="submit" data-i18n="save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="modal" id="confirmDialog" aria-labelledby="confirmText">
+  <p id="confirmText" class="confirmText"></p>
+  <div class="modalActions">
+    <button class="btn ghost" id="confirmNo" type="button" data-i18n="cancel">Cancel</button>
+    <button class="btn primary" id="confirmYes" type="button" data-i18n="deleteSaved">Delete</button>
+  </div>
+</dialog>
+
+<script src="i18n.js"></script>
+<script src="engine.js"></script>
+<script src="config.js"></script>
+<script src="native.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
