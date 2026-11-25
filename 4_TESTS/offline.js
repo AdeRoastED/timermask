@@ -1,0 +1,30 @@
+const { chromium } = require('playwright');
+let fail = 0; const ok = (c, n, e) => { console.log(c ? '  ✓' : '  ✗', n, c ? '' : (e || '')); if (!c) fail++; };
+(async () => {
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await ctx.newPage();
+  const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => m.type() === 'error' && errs.push(m.text()));
+  await page.goto('http://localhost:8765/index.html');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => navigator.serviceWorker.controller || true);
+  await page.reload(); await page.waitForTimeout(500);
+  ok(await page.evaluate(() => !!navigator.serviceWorker.controller), 'service worker controls the page');
+  const cached = await page.evaluate(async () => (await (await caches.open((await caches.keys())[0])).keys()).map(r => new URL(r.url).pathname));
+  ok(['/app.js', '/engine.js', '/i18n.js', '/styles.css', '/index.html', '/privacy.html', '/manifest.webmanifest', '/icon-maskable-512.png'].every(f => cached.includes(f)), 'all core files precached', cached.join(','));
+  await ctx.setOffline(true);
+  await page.goto('http://localhost:8765/index.html?v=25'); // query string like the old build used
+  await page.waitForSelector('#startBtn');
+  ok((await page.locator('#time').innerText()) === '05:00', 'OFFLINE: app loads (even with ?v= query)');
+  await page.click('#startBtn'); await page.waitForTimeout(1200);
+  ok((await page.locator('#time').innerText()) !== '05:00', 'OFFLINE: timer runs');
+  await page.goto('http://localhost:8765/privacy.html');
+  ok((await page.locator('h1').innerText()) === 'Privacy policy', 'OFFLINE: privacy page available');
+  await page.goto('http://localhost:8765/some/unknown/route');
+  ok(await page.locator('#startBtn').count() === 1, 'OFFLINE: unknown navigation falls back to the app shell');
+  const m = await page.evaluate(() => fetch('/manifest.webmanifest').then(r => r.json()));
+  ok(m.icons.some(i => i.purpose === 'maskable') && m.display === 'standalone', 'manifest valid: standalone + maskable icon');
+  ok(errs.filter(e => !/Failed to load resource/.test(e)).length === 0, 'no JS errors offline', errs.join('|'));
+  await b.close();
+  console.log(fail ? 'OFFLINE FAILED' : 'OFFLINE OK'); process.exit(fail ? 1 : 0);
+})();

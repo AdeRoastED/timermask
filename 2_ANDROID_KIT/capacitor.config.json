@@ -1,0 +1,10 @@
+{
+  "appId": "com.timermask.app",
+  "appName": "TimerMask",
+  "webDir": "www",
+  "backgroundColor": "#090b0e",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  }
+}
